@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const jwt = require('jsonwebtoken');
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 require('dotenv').config();
 const port = process.env.PORT || 8000;
@@ -10,6 +11,11 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+function verifyJWT(req , res , next){
+    const authHeader = req.headers.authorization;
+    console.log(authHeader);
+    next();
+}
 
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.q40wd.mongodb.net/?retryWrites=true&w=majority`;
@@ -21,6 +27,18 @@ async function run() {
         await client.connect();
         const serviceCollection = client.db('geniusCar').collection('service');
         const orderCollection = client.db('geniusCar').collection('order');
+
+        //AUTH
+        app.post('/login',async(req, res)=>{
+            const user= req.body;
+            const accessToken = jwt.sign(user , process.env.ACCESS_TOKEN_SECRET,{
+                expiresIn:'1d'
+            });
+            res.send({accessToken})
+        })
+
+
+        //Services api
 
         app.get('/service', async (req, res) => {
             const query = {};
