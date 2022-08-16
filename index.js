@@ -40,14 +40,14 @@ async function run() {
         const orderCollection = client.db('geniusCar').collection('order');
 
         //AUTH
-        app.post('/login',async(req, res)=>{
-            const user= req.body;
+        app.post('/login', async (req, res) => {
+            const user = req.body;
             console.log(user);
-            const accessToken = jwt.sign(user , process.env.ACCESS_TOKEN_SECRET,{
-                expiresIn:'1d'
+            const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {
+                expiresIn: '1d'
             });
             console.log(accessToken);
-            res.send({accessToken});
+            res.send({ accessToken });
         })
 
         //Services api
@@ -88,8 +88,8 @@ async function run() {
                 const orders = await cursor.toArray();
                 res.send(orders);
             }
-            else{
-                res.status(403).send({message: 'forbidden access'})
+            else {
+                res.status(403).send({ message: 'forbidden access' })
             }
         })
 
